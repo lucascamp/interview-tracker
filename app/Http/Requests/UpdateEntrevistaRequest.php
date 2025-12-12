@@ -14,7 +14,7 @@ class UpdateEntrevistaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'entrevistado' => 'required|in:Lucas,Thais',
+            'entrevistado_id' => 'required|exists:entrevistados,id',
             'data_cadastro_vaga' => 'required|string|max:255',
             'link_vaga' => 'required|url|max:500',
             'nome_empresa' => 'nullable|string|max:255',
@@ -31,8 +31,8 @@ class UpdateEntrevistaRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'entrevistado.required' => 'O campo entrevistado é obrigatório.',
-            'entrevistado.in' => 'O entrevistado deve ser Lucas ou Thais.',
+            'entrevistado_id.required' => 'O campo entrevistado é obrigatório.',
+            'entrevistado_id.exists' => 'O entrevistado selecionado é inválido.',
             'data_cadastro_vaga.required' => 'A data de cadastro na vaga é obrigatória.',
             'link_vaga.required' => 'O link da vaga é obrigatório.',
             'link_vaga.url' => 'O link da vaga deve ser uma URL válida.',

@@ -11,7 +11,14 @@ class EntrevistaResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'entrevistado' => $this->entrevistado,
+            'entrevistado_id' => $this->entrevistado_id,
+            'entrevistado' => $this->entrevistado?->nome,
+            'entrevistado_obj' => $this->whenLoaded('entrevistado', function () {
+                return [
+                    'id' => $this->entrevistado->id,
+                    'nome' => $this->entrevistado->nome,
+                ];
+            }),
             'data_cadastro_vaga' => $this->data_cadastro_vaga,
             'link_vaga' => $this->link_vaga,
             'nome_empresa' => $this->nome_empresa,

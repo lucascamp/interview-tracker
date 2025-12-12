@@ -3,25 +3,26 @@
         <div class="grid grid-cols-1 gap-y-6 gap-x-6 sm:grid-cols-6">
             <!-- Entrevistado -->
             <div class="sm:col-span-4">
-                <label for="entrevistado" class="block text-sm font-medium text-gray-700">
+                <label for="entrevistado_id" class="block text-sm font-medium text-gray-700">
                     Entrevistado <span class="text-red-500">*</span>
                 </label>
                 <div class="mt-1">
                     <select
-                        id="entrevistado"
-                        v-model="form.entrevistado"
+                        id="entrevistado_id"
+                        v-model="form.entrevistado_id"
                         :class="{
-                            'border-red-500': form.errors.entrevistado,
+                            'border-red-500': form.errors.entrevistado_id,
                         }"
                         class="block w-full text-base border border-gray-200 rounded-lg py-3 px-4 bg-white transition-colors hover:border-sky-300 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500"
                     >
                         <option value="">Selecione um candidato...</option>
-                        <option value="Lucas">Lucas</option>
-                        <option value="Thais">Thais</option>
+                        <option v-for="entrevistado in entrevistados" :key="entrevistado.id" :value="entrevistado.id">
+                            {{ entrevistado.nome }}
+                        </option>
                     </select>
                 </div>
-                <p v-if="form.errors.entrevistado" class="mt-1 text-sm text-red-600">
-                    {{ form.errors.entrevistado }}
+                <p v-if="form.errors.entrevistado_id" class="mt-1 text-sm text-red-600">
+                    {{ form.errors.entrevistado_id }}
                 </p>
             </div>
 
@@ -242,12 +243,16 @@ const props = defineProps({
         type: Object,
         default: null,
     },
+    entrevistados: {
+        type: Array,
+        default: () => [],
+    },
 });
 
 const emit = defineEmits(['cancel', 'saved']);
 
 const form = useForm({
-    entrevistado: props.entrevista?.entrevistado || '',
+    entrevistado_id: props.entrevista?.entrevistado_id || '',
     data_cadastro_vaga: props.entrevista?.data_cadastro_vaga || '',
     link_vaga: props.entrevista?.link_vaga || '',
     nome_empresa: props.entrevista?.nome_empresa || '',
@@ -263,7 +268,7 @@ const form = useForm({
 // Atualizar form quando entrevista mudar
 watch(() => props.entrevista, (newEntrevista) => {
     if (newEntrevista) {
-        form.entrevistado = newEntrevista.entrevistado || '';
+        form.entrevistado_id = newEntrevista.entrevistado_id || '';
         form.data_cadastro_vaga = newEntrevista.data_cadastro_vaga || '';
         form.link_vaga = newEntrevista.link_vaga || '';
         form.nome_empresa = newEntrevista.nome_empresa || '';

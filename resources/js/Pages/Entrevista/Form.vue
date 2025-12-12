@@ -13,18 +13,19 @@
                             Entrevistado <span class="text-red-500">*</span>
                         </label>
                         <select
-                            v-model="form.entrevistado"
+                            v-model="form.entrevistado_id"
                             :class="{
-                                'border-red-500': errors.entrevistado,
+                                'border-red-500': errors.entrevistado_id,
                             }"
                             class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
                         >
                             <option value="">Selecione...</option>
-                            <option value="Lucas">Lucas</option>
-                            <option value="Thais">Thais</option>
+                            <option v-for="entrevistado in entrevistados" :key="entrevistado.id" :value="entrevistado.id">
+                                {{ entrevistado.nome }}
+                            </option>
                         </select>
-                        <p v-if="errors.entrevistado" class="mt-1 text-sm text-red-600">
-                            {{ errors.entrevistado }}
+                        <p v-if="errors.entrevistado_id" class="mt-1 text-sm text-red-600">
+                            {{ errors.entrevistado_id }}
                         </p>
                     </div>
 
@@ -208,13 +209,15 @@ const route = window.route;
 
 const props = defineProps({
     entrevista: Object,
+    entrevistados: Array,
     errors: Object,
 });
 
 const form = useForm({
-    entrevistado: props.entrevista?.entrevistado || '',
+    entrevistado_id: props.entrevista?.entrevistado_id || '',
     data_cadastro_vaga: props.entrevista?.data_cadastro_vaga || '',
     link_vaga: props.entrevista?.link_vaga || '',
+    nome_empresa: props.entrevista?.nome_empresa || '',
     plataforma: props.entrevista?.plataforma || '',
     data_resposta: props.entrevista?.data_resposta || '',
     resposta: props.entrevista?.resposta || '',

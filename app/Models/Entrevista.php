@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Entrevista extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'entrevistado',
+        'entrevistado_id',
         'data_cadastro_vaga',
         'link_vaga',
         'nome_empresa',
@@ -27,9 +28,9 @@ class Entrevista extends Model
         'data_resposta' => 'date',
     ];
 
-    public static function getEntrevistados(): array
+    public function entrevistado(): BelongsTo
     {
-        return ['Lucas', 'Thais'];
+        return $this->belongsTo(Entrevistado::class);
     }
 
     public static function getStatus(): array

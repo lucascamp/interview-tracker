@@ -13,6 +13,12 @@
                         >
                             Dashboard
                         </Link>
+                        <Link
+                            :href="route('entrevistados.index')"
+                            class="text-gray-700 hover:text-indigo-600"
+                        >
+                            Entrevistados
+                        </Link>
                     </div>
                 </div>
             </div>
