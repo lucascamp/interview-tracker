@@ -1,0 +1,16 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copiar apenas package files para cache de dependências
+COPY package*.json ./
+
+# Instalar dependências (será sobrescrito pelo volume mount)
+RUN npm install
+
+# Expor porta
+EXPOSE 5173
+
+# Comando padrão (será sobrescrito no docker-compose)
+CMD ["npm", "run", "dev"]
+

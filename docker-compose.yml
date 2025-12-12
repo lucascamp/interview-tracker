@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  mysql:
+    build:
+      context: .
+      dockerfile: Dockerfile.mysql
+    container_name: interview-tracker-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: interview_tracker
+    ports:
+      - "33063:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - interview-tracker-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 30s
+    restart: unless-stopped
+
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: interview-tracker-php
+    volumes:
+      - .:/var/www/html
+      - ./storage:/var/www/html/storage
+      - ./bootstrap/cache:/var/www/html/bootstrap/cache
+    working_dir: /var/www/html
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - interview-tracker-network
+    ports:
+      - "8055:8055"
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=interview_tracker
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+    restart: unless-stopped
+    command: php-fpm
+
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    container_name: interview-tracker-node
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+    working_dir: /app
+    ports:
+      - "5173:5173"
+    networks:
+      - interview-tracker-network
+    environment:
+      - NODE_ENV=development
+    command: sh -c "rm -rf node_modules/.vite 2>/dev/null; npm install && npm run dev -- --host 0.0.0.0"
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    container_name: interview-tracker-nginx
+    ports:
+      - "80:80"
+      - "8055:8055"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
+      - node
+    networks:
+      - interview-tracker-network
+    restart: unless-stopped
+    profiles:
+      - production
+
+networks:
+  interview-tracker-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
+  node_modules:
+    driver: local
+

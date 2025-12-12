@@ -1,0 +1,16 @@
+FROM mysql:8.0
+
+# Variáveis de ambiente
+ENV MYSQL_ROOT_PASSWORD=root
+ENV MYSQL_DATABASE=interview_tracker
+
+# Configurações para inicialização mais rápida
+ENV MYSQL_ROOT_HOST=%
+
+# Expor porta
+EXPOSE 3306
+
+# Healthcheck
+HEALTHCHECK --interval=5s --timeout=3s --retries=10 \
+  CMD mysqladmin ping -h localhost -uroot -proot || exit 1
+
